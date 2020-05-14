@@ -14,19 +14,19 @@ AsyncAttachedControlGroup::~AsyncAttachedControlGroup()
     state.removeParameterListener (paramID, this);
 }
 
-void AsyncAttachedControlGroup::addControl (AsyncAttachedControlBase* c)
+void AsyncAttachedControlGroup::addControl (AsyncAttachedControl* c)
 {
     if (c != nullptr)
         controls.push_back (c);
 }
 
-void AsyncAttachedControlGroup::removeControl (AsyncAttachedControlBase* c)
+void AsyncAttachedControlGroup::removeControl (AsyncAttachedControl* c)
 {
     if (c != nullptr)
         controls.erase (std::remove (controls.begin(), controls.end(), c), controls.end());
 }
 
-void AsyncAttachedControlGroup::controlValueChanged (AsyncAttachedControlBase* c)
+void AsyncAttachedControlGroup::controlValueChanged (AsyncAttachedControl* c)
 {
     if (ignoreCallbacks || c == nullptr)
         return;
@@ -109,20 +109,20 @@ void AsyncAttachedControlGroup::handleAsyncUpdate()
 }
 
 //==============================================================================
-AsyncAttachedControlBase::AsyncAttachedControlBase (AsyncAttachedControlGroup& g)
+AsyncAttachedControl::AsyncAttachedControl (AsyncAttachedControlGroup& g)
     : group{ g }
 {
     group.addControl (this);
 }
 
-AsyncAttachedControlBase::~AsyncAttachedControlBase()
+AsyncAttachedControl::~AsyncAttachedControl()
 {
     group.removeControl (this);
 }
 
 //==============================================================================
 AsyncSliderAttachment::AsyncSliderAttachment (AsyncAttachedControlGroup& g, Slider& sl)
-    : AsyncAttachedControlBase{ g }, slider{ sl }
+    : AsyncAttachedControl{ g }, slider{ sl }
 {
     if (auto param{ group.getParameter() })
     {
