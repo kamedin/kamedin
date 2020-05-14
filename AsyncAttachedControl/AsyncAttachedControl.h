@@ -5,16 +5,16 @@
 // custom attachment
 // changes are withheld until confirmed
 
-class AsyncAttachedControlBase;
+class AsyncAttachedControl;
 
 class AsyncAttachedControlGroup : AudioProcessorValueTreeState::Listener, AsyncUpdater
 {
 public:
     AsyncAttachedControlGroup (AudioProcessorValueTreeState& s, const String& id);
     virtual ~AsyncAttachedControlGroup();
-    void addControl (AsyncAttachedControlBase* c);
-    void removeControl (AsyncAttachedControlBase* c);
-    void controlValueChanged (AsyncAttachedControlBase* c);
+    void addControl (AsyncAttachedControl* c);
+    void removeControl (AsyncAttachedControl* c);
+    void controlValueChanged (AsyncAttachedControl* c);
     void beginParameterChange();
     void endParameterChange();
     void updateValue (float value);
@@ -31,28 +31,28 @@ private:
     String paramID;
     bool ignoreCallbacks{};
     std::atomic<float> lastValue{};
-    std::vector<AsyncAttachedControlBase*> controls;
+    std::vector<AsyncAttachedControl*> controls;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AsyncAttachedControlGroup)
 };
 
 //==============================================================================
-class AsyncAttachedControlBase
+class AsyncAttachedControl
 {
 public:
-    AsyncAttachedControlBase (AsyncAttachedControlGroup& g);
-    virtual ~AsyncAttachedControlBase();
+    AsyncAttachedControl (AsyncAttachedControlGroup& g);
+    virtual ~AsyncAttachedControl();
     virtual float getValue() const = 0;
     virtual void setValue (float) = 0;
 
     AsyncAttachedControlGroup& group;
 
 private:
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AsyncAttachedControlBase)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AsyncAttachedControl)
 };
 
 //==============================================================================
-class AsyncSliderAttachment : AsyncAttachedControlBase, Slider::Listener
+class AsyncSliderAttachment : AsyncAttachedControl, Slider::Listener
 {
 public:
     AsyncSliderAttachment (AsyncAttachedControlGroup& g, Slider& sl);
